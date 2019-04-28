@@ -1,6 +1,7 @@
 node {
     stage('Preparation'){
-        checkout scm    
+        checkout scm   
+        
     }
     stage('Build'){
         sh 'echo "Hello World!"'
