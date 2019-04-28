@@ -1,6 +1,6 @@
 node {
     stage('Preparation'){
-        checkout()//[$class: 'GitSCM', branches: [[name: '*/master']], userRemoteConfigs: [[url: 'https://github.com/MarkusGitHup/CICD_Pipeline.git']]])    
+        checkout scm    
     }
     stage('Build'){
         sh 'echo "Hello World!"'
