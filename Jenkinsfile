@@ -4,7 +4,7 @@ node {
         
     }
     stage('Build'){
-        sh 'echo "Hello World!"'
+        Execute Docker command
     }
     stage('Integration'){
         sh 'echo "Hello World!"'
