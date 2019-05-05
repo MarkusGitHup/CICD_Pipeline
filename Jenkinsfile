@@ -4,10 +4,8 @@ node {
         
     	}
     	stage('Build'){
-       		docker.image('node:parcelsizeimage').inside {
-			stage('Test'){
-				sh 'node --version'
-			}
+       		docker.image('parcelsizeimage').inside {
+			sh 'node --version'
 		}
     	}
     	stage('Integration'){
