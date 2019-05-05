@@ -1,15 +1,13 @@
 node {
-	agent {
-		dockerfile true
-	}
-	
 	stage('Preparation'){
         	checkout scm   
         
     	}
     	stage('Build'){
-       		steps{
-			sh 'echo myCustomEnvVar = $myCustomEnvar'
+       		docker.image('node:parcelsizeimage').inside {
+			stage('Test'){
+				sh 'node --version'
+			}
 		}
     	}
     	stage('Integration'){
