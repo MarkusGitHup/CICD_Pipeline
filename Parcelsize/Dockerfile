@@ -1,0 +1,8 @@
+FROM java:8
+
+WORKDIR /app
+ADD ./build/libs/Parcelsize-0.1.jar Parcelsize-0.1.jar
+
+EXPOSE 8083
+
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","Parcelsize-0.1.jar"]
