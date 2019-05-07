@@ -5,7 +5,7 @@ node {
     	}
     	stage('Build'){
        		sh 'gradle build'
-		sh 'docker build -t parcelsize .'		}
+		sh 'docker build -t parcelsize .'
     	}
     	stage('Integration'){
         	sh 'echo "Hello World!"'
