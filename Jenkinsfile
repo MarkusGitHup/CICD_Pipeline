@@ -4,9 +4,8 @@ node {
         
     	}
     	stage('Build'){
-       		docker.image('parcelsizeimage').inside {
-			sh 'node --version'
-		}
+       		sh 'gradle build'
+		sh 'docker build -t parcelsize .'		}
     	}
     	stage('Integration'){
         	sh 'echo "Hello World!"'
