@@ -15,8 +15,6 @@ public class ParcelsizeServer {
 		try {
 			server = HttpServerFactory.create("http://localhost:8082/rest");
 			server.start();
-			JOptionPane.showMessageDialog(null, "Ende");
-			server.stop(0);
 		} catch (IllegalArgumentException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
