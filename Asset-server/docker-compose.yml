@@ -1,0 +1,13 @@
+version: '3'
+
+#deployed locally at ~/assetServer
+
+services:
+ assets:
+  image: python:alpine
+  container_name: sftaAssets
+  ports:
+  - '8085:8085'
+  volumes:
+  - ./:/home/
+  command: [sh, -c, 'cd /home && python -m http.server 8085']
