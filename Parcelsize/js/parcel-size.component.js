@@ -57,7 +57,7 @@ angular.
     		$rootScope.parcelsize = "";
     		data = {params:{length: this.length, width: this.width, height: this.heigth, size: null}};
     		
-    		$http.get("http://www.allgaeu-parcel-service.de:4711/rest/parcel/size/", data)
+    		$http.get("localhost:4711/rest/parcel/size/", data)
     		 .then(function(response)){
     			$rootScope.parcelsize = response.data;
     		});

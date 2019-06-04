@@ -172,8 +172,5 @@ class UnitTest {
 	}
 */
 		
-	public static void main(String [] args) {
-		UnitTest p = new UnitTest();
-		p.TestXS_lower();
-	}
+	
 }
