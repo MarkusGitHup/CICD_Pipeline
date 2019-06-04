@@ -30,7 +30,7 @@ Vagrant.configure("2") do |config|
   # set name of new vm
   config.vm.provider "virtualbox" do |v|
     v.name = "Ubuntu Asset-Server Pipeline"
-    v.memory = 3000
+    v.memory = 1000
   	v.cpus = 2
   end
 
@@ -51,6 +51,8 @@ Vagrant.configure("2") do |config|
 
   # install docker
   config.vm.provision "docker"
+  config.vm.provision "file", source: "~/eclipse-workspace/CICD_Pipeline/Parcelsize/js/parcel-size.component.js", destination: "/var/www/html"
+
  
 
 
