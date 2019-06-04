@@ -1,16 +1,18 @@
-CREATE DATABASE parcel_database;
+CREATE DATABASE `swta`;
 
-USE parcel_database;
+USE `swta`;
 
-CREATE TABLE gurtmass (Paketgroesse VARCHAR(20), Min_Gurtmass INT, Max_Gurtmass INT);
+DROP TABLE IF EXISTS `packagesize`;
 
-INSERT INTO gurtmass (Paketgroesse, Min_Gurtmass, Max_Gurtmass) VALUES ('XS',0,35);
+CREATE TABLE `packagesize` (
+  `id` int(11) DEFAULT NULL,
+  `size` varchar(3) DEFAULT NULL,
+  `min_size` int(11) DEFAULT NULL,
+  `max_size` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO gurtmass (Paketgroesse, Min_Gurtmass, Max_Gurtmass) VALUES ('S',35,50);
+LOCK TABLES `packagesize` WRITE;
 
-INSERT INTO gurtmass (Paketgroesse, Min_Gurtmass, Max_Gurtmass) VALUES ('M',50,65);
-
-INSERT INTO gurtmass (Paketgroesse, Min_Gurtmass, Max_Gurtmass) VALUES ('L',65,80);
-
-INSERT INTO gurtmass (Paketgroesse, Min_Gurtmass, Max_Gurtmass) VALUES ('XL',80,300);
+INSERT INTO `packagesize` VALUES (0,'XS',0,35),(1,'S',35,50),(3,'M',50,65),(4,'L',65,80),(5,'XL',80,300);
+UNLOCK TABLES;
 

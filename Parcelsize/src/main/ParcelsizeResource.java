@@ -49,7 +49,7 @@ public class ParcelsizeResource {
 			}
 
 		} catch (Exception e) {
-			System.out.println("DB-Fehler!");
+			System.out.println("DB-Fehler!" +e.getMessage());
 		}
 
 		return Response.status(200).header("Access-Control-Allow-Origin", "*")

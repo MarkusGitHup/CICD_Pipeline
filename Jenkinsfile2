@@ -20,9 +20,9 @@ node {
         	}
         	//save 
        
-        	sh 'docker save -o /Asset-server/parcelsizeimage.tar parcelsizeimage'
-        	sh 'docker save -o /Asset-server/databaseimage.tar databaseimage'
-        	sh 'docker save -o /Asset-server/tomcatimage.tar tomcatimage'
+        	sh 'docker save -o ./Asset-server/parcelsizeimage.tar parcelsizeimage'
+        	sh 'docker save -o ./Asset-server/databaseimage.tar databaseimage'
+        	sh 'docker save -o ./Asset-server/tomcatimage.tar tomcatimage'
         	    
         	//Asset-Server
         	//dir ('/var/lib/jenkins/workspace/Parcelsize-Pipeline/vagrant/asset'){
@@ -48,26 +48,28 @@ node {
         	}
 
 		// JavaScript auf Asset-Server transferieren
-		sh 'cp js/parcel-size.component.js /Asset-server/js/'
+		sh 'cp ./Parcelsize/js/parcel-size.component.js ./Asset-server/js/'
 
 		// auf Testserver hochladen
 
 		//sh 'sshpass -p vagrant scp -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=no" -P 22 ./ vagrant@192.168.50.3:/home'
         	
-		sh "vagrant ssh Ubuntu-Testserver-Pipeline -c 'wget -nH -r 192.168.50.1:8085/ -P data'"
+		//sh "vagrant ssh IDIDIDID -c 'wget -nH -r 192.168.50.1:8085/ -P data'"
 
+		//oder mit ssh
+		sh "sshpass -p vagrant ssh -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' -t vagrant@192.168.50.3 'echo vagrant | wget -nH -r 192.168.50.1:8085/ -P data'"
 		// Docker-Images importieren
-       		sh 'vagrant ssh Ubuntu-Testserver-Pipeline -c "sudo docker load -i data/docker/frontend.tar"'
-       		sh 'vagrant ssh Ubuntu-Testserver-Pipeline -c "sudo docker load -i data/docker/parcelsizeimage.tar"'
-		sh 'vagrant ssh Ubuntu-Testserver-Pipeline -c "sudo docker load -i data/docker/home/mysql.tar"'
+       		sh "sshpass -p vagrant ssh -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' -t vagrant@192.168.50.3 'echo vagrant | sudo docker load -i data/tomcatimage.tar'"
+       		sh "sshpass -p vagrant ssh -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' -t vagrant@192.168.50.3 'echo vagrant | sudo docker load -i data/parcelsizeimage.tar'"
+		sh "sshpass -p vagrant ssh -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' -t vagrant@192.168.50.3 'echo vagrant | sudo docker load -i data/databaseimage.tar'"
 
 		// Container starten
-       		sh 'vagrant ssh Ubuntu-Testserver-Pipeline -c "sudo docker run -d --network="host" frontend.tar"'
-       		sh 'vagrant ssh Ubuntu-Testserver-Pipeline -c "sudo docker run -d --network="host" parcelsizeimage.tar"'
-       		sh 'vagrant ssh Ubuntu-Testserver-Pipeline -c "sudo docker run -d --network="host" mysql.tar"'
+       		sh "sshpass -p vagrant ssh -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' -t vagrant@192.168.50.3 'echo vagrant | sudo docker run -d --network="host" tomcatimage'"
+       		sh "sshpass -p vagrant ssh -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' -t vagrant@192.168.50.3 'echo vagrant | sudo docker run -d --network="host" parcelsizeimage'"
+       		sh "sshpass -p vagrant ssh -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' -t vagrant@192.168.50.3 'echo vagrant | sudo docker run -d --network="host" databaseimage'"
 
        		// Datenbankverbindung testen, sleep 30 als Timeout bis DB gestartet ist
-       		sh 'vagrant ssh Ubuntu-Testserver-Pipeline -c "chmod u+x data/dbTest && sleep 30 && data/dbTest"'
+       		sh "sshpass -p vagrant ssh -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' -t vagrant@192.168.50.3 'echo vagrant | chmod u+x data/dbTest && sleep 30 && data/dbTest'"
 	}
 
     	stage('UAT'){

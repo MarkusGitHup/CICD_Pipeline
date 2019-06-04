@@ -1,67 +1,65 @@
+
 angular.
   module('parcelConfig').
   component('parcelSize', {
 	  transclude: true,
 	  template:
-
-		  '<form class="w3-container">'+
-		  	'<div class="w3-panel w3-card-2">'+
-					'<div class="w3-container w3-teal">'+
-						'<h2>Paketgroesse</h2>'+
-		    	'</div>'+
-					'<form class="w3-container" ng-submit="$ctrl.UpdateSize()">'+
-
-						'<div class="w3-row">'+
-							'<h4>Laenge</h4>'+
-   		  			'<input class="w3-input" id="cfg-recp-name" type="text" ng-model="$ctrl.parcelsize.length">'+
-						'</div>'+
-
-						'<div class="w3-row">'+
-							'<h4>Breite</h4>'+
-							'<input class="w3-input" id="cfg-recp-name" type="text" ng-model="$ctrl.parcelsize.width">'+
-						'</div>'+
-
-						'<div class="w3-row">'+
-							'<h4>Hoehe</h4>'+
-							'<input class="w3-input" id="cfg-recp-name" type="text" ng-model="$ctrl.parcelsize.height">'+
-						'</div>'+
-
-
-							'<div class="w3-container">'+
-								'<h4>Groesse: {{testSize}}</h4>'+
-							'</div>'+
-
-
-						'<div class="w3-row">'+
-							'<div class="w3-cell">'+
-								'<button class="w3-button w3-teal" ng-click="" >'+
-									'<h4>Groesse berechnen</h4>'+
-								'</button>'+
-							'</div>'+
-							'<div class="w3-cell">'+
-								'<div class="w3-container">'+
-									'<h4>Groesse: {{$ctrl.parcelsize.size}}</h4>'+
-								'</div>'+
-							'</div>'+
-						'</div>'+
-					'</form>'+
-		  	'</div>'+
-		  '</form>'+
-		  '<br />'+
-		  '</div>' ,
-
-
-    controller: function ParcelSizeController($rootScope, $http, $window) {
-    
-    	this.getSize = function(){
-    		$rootScope.parcelsize = "";
-    		data = {params:{length: this.length, width: this.width, height: this.heigth, size: null}};
+    	'<div class="w3-panel w3-card-2">'+
+    		'<div class="w3-container w3-teal">'+
+    			'<h2>Paketgröße</h2>'+
+    		'</div>' +
     		
-    		$http.get("localhost:4711/rest/parcel/size/", data)
-    		 .then(function(response)){
-    			$rootScope.parcelsize = response.data;
-    		});
-    	};
+    		'<form class="w3-container">'+
+    			'<div class="w3-cell">'+
+
+    	  
+		    	  '<div class="w3-cell">'+
+		   		  '<label>Länge</label>'+
+		   		  '<input class="w3-input" id="cfg-package-length" type="text" placeholder="0" ng-model="$ctrl.length">'+
+		   		  '</div>'+
+		   		  
+		   		  '<div class="w3-row">'+
+			   		  '<div class="w3-cell">'+
+			   		  '<label>Breite</label>'+
+			   		  '<input class="w3-input" id="cfg-package-width" type="text" placeholder="0" ng-model="$ctrl.width">'+
+			   		  '</div>'+
+		   		  '</div>'+
+		   		  
+		   		  '<div class="w3-row">'+
+			   		  '<div class="w3-cell">'+
+			   		  '<label>Tiefe</label>'+
+			   		  '<input class="w3-input" id="cfg-package-depth" type="text" placeholder="0" ng-model="$ctrl.height">'+
+			   		  '</div>'+
+		   		  '</div>'+
+		   		  '</div>'+
+		   		  
+		   		  
+		   	      '<button id="button" class="w3-button w3-purple" ng-click="$ctrl.getSize()">Größe berechnen</button>' +
+		   	      '<label>Paketgröße: </label>' +
+		   	      '<a id="size">{{$root.parcelsize.size}}</a>'+
+		   	       
+   		  '</form>'+
+   		  '</div>',
     	
-    }
-});
+   		  
+   	    controller: function ParcelSizeController($rootScope, $http) {
+	  	  		
+	  		this.getSize = function(){
+	  			
+	  		   $rootScope.parcelsize = "";
+	  		   
+	  		   data = {params:{length: this.length, width: this.width, height: this.height, size: null}};
+	  			
+	  		   $http.get("http://192.168.50.1:8082/rest/parcel/size/", data)
+	  	       	.then(function(response) {	  
+
+	  	            $rootScope.parcelsize = response.data;
+	  	        });
+	  	       	
+	  		};	  		
+  }
+
+  });
+  
+ 
+  
