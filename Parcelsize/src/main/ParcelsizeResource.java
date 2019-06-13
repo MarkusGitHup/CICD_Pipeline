@@ -7,6 +7,7 @@ import java.sql.Statement;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
@@ -15,13 +16,25 @@ import javax.ws.rs.core.Response;
 @Path("parcel")
 public class ParcelsizeResource {
 
-	@GET
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	@Path("size/")
-	public Response getSize(@QueryParam("length") String length, @QueryParam("width") String width,
-			@QueryParam("height") String height, @QueryParam("size") String size) {
+	//@GET
+	//@Consumes(MediaType.APPLICATION_JSON)
+	//@Produces(MediaType.APPLICATION_JSON)
+	//@Path("size/")
+	//public Response getSize(@QueryParam("length") String length, @QueryParam("width") String width,
+		//	@QueryParam("height") String height, @QueryParam("size") String size) {
 
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("length/{length}/width/{width}/height/{height}")
+	public Response getSize(@PathParam("length") String length,
+							@PathParam("width") String width,
+							@PathParam("height") String height) {
+		//Parcelsize parcelsize = new Parcelsize(length, width, height, "");
+		//parcelsize.calculateSize();
+		//return Response.ok().entity(parcelsize).build();
+	//}
+
+	
 		System.out.println("[info] received length " + length + ", width " + width + ", height " + height);
 
 		Parcel parcel = null;
@@ -36,7 +49,7 @@ public class ParcelsizeResource {
 
 		// open database connection
 		try {
-
+			System.out.println("Bin jetzt bei database connection");
 			Connection con = DataBase.openConnection();
 			Statement stmt = con.createStatement();
 			ResultSet rs = stmt.executeQuery("SELECT id, size, min_size, max_size " + "FROM packagesize "
@@ -51,11 +64,12 @@ public class ParcelsizeResource {
 		} catch (Exception e) {
 			System.out.println("DB-Fehler!" +e.getMessage());
 		}
+		return Response.ok().entity(parcel).build();
 
-		return Response.status(200).header("Access-Control-Allow-Origin", "*")
-				.header("Access-Control-Allow-Credentials", "true")
-				.header("Access-Control-Allow-Headers", "origin, content-type, accept, authorization")
-				.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD").entity(parcel).build();
+		//return Response.status(200).header("Access-Control-Allow-Origin", "*")
+			//	.header("Access-Control-Allow-Credentials", "true")
+			//	.header("Access-Control-Allow-Headers", "origin, content-type, accept, authorization")
+			//	.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD").entity(parcel).build();
 	}
 
 	// only for Test

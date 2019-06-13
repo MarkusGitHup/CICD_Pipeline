@@ -12,7 +12,7 @@ public class DataBase {
 	//String url = "jdbc:mysql://mysql_parcelsize:3306/swta";
 	//String url = "jdbc\:mysql\://localhost/swta?user\=root&password\=&useJDBCCompliantTimezoneShift\=true&useLegacyDatetimeCode\=false&serverTimezone\=UTC";
 	//String url = "jdbc:mysql://localhost:3306/cicd?serverTimezone=UTC";
-	String url = "jdbc:mysql://192.168.50.1/swta?user=root&password=&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
+	String url = "jdbc:mysql://localhost:3306/swta?user=root&password=&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
 	//String username = "";
 	//String password = "";
 
@@ -21,13 +21,19 @@ public class DataBase {
 
 	private DataBase() {
 		try {
-			Class.forName("com.mysql.cj.jdbc.Driver");
+			Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
 			//con = DriverManager.getConnection(url, username, password);
 			con = DriverManager.getConnection(url);
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 			con = null;
 		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
