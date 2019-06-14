@@ -4,7 +4,7 @@ import "database/sql"
 import _ "github.com/go-sql-driver/mysql"
 
 func main() {
-	db, err := sql.Open("mysql", "root:@/sfta")
+	db, err := sql.Open("mysql", "root:@/swta")
 
 	if err != nil {
 		panic(err.Error()) // Just for example purpose. You should use proper error handling instead of panic
