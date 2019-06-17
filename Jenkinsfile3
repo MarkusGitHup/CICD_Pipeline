@@ -32,21 +32,20 @@ node {
         	}
 
 		// JavaScript auf Asset-Server transferieren
-		sh 'cp ./Parcelsize/js/parcel-size.component.js ./Asset-server/js/'
+		    sh 'cp ./Parcelsize/js/parcel-size.component.js ./Asset-server/js/'
 
 		// auf Testserver hochladen
-
-		sh "sshpass -p vagrant ssh -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' -t vagrant@192.168.50.3 'echo vagrant | wget -nH -r 192.168.50.1:8085/ -P data'"
+		    sh "sshpass -p vagrant ssh -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' -t vagrant@192.168.50.3 'echo vagrant | wget -nH -r 192.168.50.1:8085/ -P data'"
 
 		// Docker-Images importieren
        		sh "sshpass -p vagrant ssh -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' -t vagrant@192.168.50.3 'echo vagrant | sudo docker load -i data/tomcatimage.tar'"
        		sh "sshpass -p vagrant ssh -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' -t vagrant@192.168.50.3 'echo vagrant | sudo docker load -i data/parcelsizeimage.tar'"
-		sh "sshpass -p vagrant ssh -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' -t vagrant@192.168.50.3 'echo vagrant | sudo docker load -i data/databaseimage.tar'"
+		    sh "sshpass -p vagrant ssh -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' -t vagrant@192.168.50.3 'echo vagrant | sudo docker load -i data/databaseimage.tar'"
 
 		// Container starten
-       		sh "sshpass -p vagrant ssh -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' -t vagrant@192.168.50.3 'echo vagrant | sudo docker run -d --network="host" tomcatimage'"
-       		sh "sshpass -p vagrant ssh -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' -t vagrant@192.168.50.3 'echo vagrant | sudo docker run -d --network="host" parcelsizeimage'"
-       		sh "sshpass -p vagrant ssh -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' -t vagrant@192.168.50.3 'echo vagrant | sudo docker run -d --network="host" databaseimage'"
+       		sh 'sshpass -p vagrant ssh -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=no" -t vagrant@192.168.50.3 "echo vagrant | sudo docker run -d --network="host" tomcatimage"'
+       		sh 'sshpass -p vagrant ssh -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=no" -t vagrant@192.168.50.3 "echo vagrant | sudo docker run -d --network="host" parcelsizeimage"'
+       		sh 'sshpass -p vagrant ssh -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=no" -t vagrant@192.168.50.3 "echo vagrant | sudo docker run -d --network="host" databaseimage"'
 
        		// Datenbankverbindung testen, sleep 30 als Timeout bis DB gestartet ist
        		sh "sshpass -p vagrant ssh -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' -t vagrant@192.168.50.3 'echo vagrant | chmod u+x data/dbTest && sleep 30 && data/dbTest'"
@@ -80,9 +79,9 @@ node {
 		    sh "sshpass -p vagrant ssh -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' -t vagrant@192.168.50.5 'echo vagrant | sudo docker load -i data/databaseimage.tar'"
 
        // Container starten
-            sh "sshpass -p vagrant ssh -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' -t vagrant@192.168.50.5 'echo vagrant | sudo docker run -d --network="host" tomcatimage'"
-       		sh "sshpass -p vagrant ssh -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' -t vagrant@192.168.50.5 'echo vagrant | sudo docker run -d --network="host" parcelsizeimage'"
-       		sh "sshpass -p vagrant ssh -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' -t vagrant@192.168.50.5 'echo vagrant | sudo docker run -d --network="host" databaseimage'"
+            sh 'sshpass -p vagrant ssh -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=no" -t vagrant@192.168.50.5 "echo vagrant | sudo docker run -d --network="host" tomcatimage"'
+       		sh 'sshpass -p vagrant ssh -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=no" -t vagrant@192.168.50.5 "echo vagrant | sudo docker run -d --network="host" parcelsizeimage"'
+       		sh 'sshpass -p vagrant ssh -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=no" -t vagrant@192.168.50.5 "echo vagrant | sudo docker run -d --network="host" databaseimage"'
 
             sh "sshpass -p vagrant ssh -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' -t vagrant@192.168.50.5 'echo vagrant | sudo chmod u+x data/geckodriver'"
 		    sh "sshpass -p vagrant ssh -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' -t vagrant@192.168.50.5 'echo vagrant | sudo rm -R -f Parcelsize'"
@@ -112,8 +111,8 @@ node {
 		    sh "sshpass -p vagrant ssh -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' -t vagrant@192.168.50.2 'echo vagrant | sudo docker load -i data/databaseimage.tar'"
 
        // Container starten
-            sh "sshpass -p vagrant ssh -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' -t vagrant@192.168.50.2 'echo vagrant | sudo docker run -d --network="host" tomcatimage'"
-       		sh "sshpass -p vagrant ssh -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' -t vagrant@192.168.50.2 'echo vagrant | sudo docker run -d --network="host" parcelsizeimage'"
-       		sh "sshpass -p vagrant ssh -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' -t vagrant@192.168.50.2 'echo vagrant | sudo docker run -d --network="host" databaseimage'"
+       		sh 'sshpass -p vagrant ssh -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=no" -t vagrant@192.168.50.2 "echo vagrant | sudo docker run -d --network="host" tomcatimage"'
+       		sh 'sshpass -p vagrant ssh -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=no" -t vagrant@192.168.50.2 "echo vagrant | sudo docker run -d --network="host" parcelsizeimage"'
+       		sh 'sshpass -p vagrant ssh -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=no" -t vagrant@192.168.50.2 "echo vagrant | sudo docker run -d --network="host" databaseimage"'
 }
 }
