@@ -1,0 +1,119 @@
+node {
+	stage('Preparation'){
+        	git credentialsId: '6030c8a4-b481-417a-97e2-056eb153e4d9', branch: 'master', url: 'https://github.com/MarkusGitHup/CICD_Pipeline.git'   
+        
+    	}
+    	stage('Build'){
+       		dir('/var/lib/jenkins/workspace/Parcelsize-Pipeline/Parcelsize') {
+       		    sh 'gradle build'
+       		    sh 'docker build -t parcelsizeimage .'   
+       		}
+    	}
+    	stage('Integration'){
+        	// produktiv
+        	//dir ('/var/lib/jenkins/workspace/Parcelsize-Pipeline/vagrant/prod'){
+        	//testserver
+               	dir ('/var/lib/jenkins/workspace/Parcelsize-Pipeline/vagrant/test'){
+        	sh 'rm -rf .vagrant'
+        	sh 'vagrant destroy -f'
+        	sh 'vagrant up'
+        	}
+        	//save 
+       
+        	sh 'docker save -o ./Asset-server/parcelsizeimage.tar parcelsizeimage'
+        	sh 'docker save -o ./Asset-server/databaseimage.tar databaseimage'
+        	sh 'docker save -o ./Asset-server/tomcatimage.tar tomcatimage'
+
+		//Asset-Server (Docker) starten
+
+        	dir ('/var/lib/jenkins/workspace/Parcelsize-Pipeline/Asset-server'){
+        	sh 'docker-compose up -d'
+        	
+        	}
+
+		// JavaScript auf Asset-Server transferieren
+		sh 'cp ./Parcelsize/js/parcel-size.component.js ./Asset-server/js/'
+
+		// auf Testserver hochladen
+
+		sh "sshpass -p vagrant ssh -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' -t vagrant@192.168.50.3 'echo vagrant | wget -nH -r 192.168.50.1:8085/ -P data'"
+
+		// Docker-Images importieren
+       		sh "sshpass -p vagrant ssh -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' -t vagrant@192.168.50.3 'echo vagrant | sudo docker load -i data/tomcatimage.tar'"
+       		sh "sshpass -p vagrant ssh -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' -t vagrant@192.168.50.3 'echo vagrant | sudo docker load -i data/parcelsizeimage.tar'"
+		sh "sshpass -p vagrant ssh -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' -t vagrant@192.168.50.3 'echo vagrant | sudo docker load -i data/databaseimage.tar'"
+
+		// Container starten
+       		sh "sshpass -p vagrant ssh -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' -t vagrant@192.168.50.3 'echo vagrant | sudo docker run -d --network="host" tomcatimage'"
+       		sh "sshpass -p vagrant ssh -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' -t vagrant@192.168.50.3 'echo vagrant | sudo docker run -d --network="host" parcelsizeimage'"
+       		sh "sshpass -p vagrant ssh -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' -t vagrant@192.168.50.3 'echo vagrant | sudo docker run -d --network="host" databaseimage'"
+
+       		// Datenbankverbindung testen, sleep 30 als Timeout bis DB gestartet ist
+       		sh "sshpass -p vagrant ssh -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' -t vagrant@192.168.50.3 'echo vagrant | chmod u+x data/dbTest && sleep 30 && data/dbTest'"
+	}
+
+    	stage('UAT'){
+		sh "sshpass -p vagrant ssh -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' -t vagrant@192.168.50.3 'echo vagrant | sudo chmod u+x data/geckodriver'"
+		sh "sshpass -p vagrant ssh -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' -t vagrant@192.168.50.3 'echo vagrant | sudo rm -R -f Parcelsize'"
+       	sh 'sshpass -p vagrant scp -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=no" -P 22 ./ vagrant@192.168.50.3:/home'
+		sh "sshpass -p vagrant ssh -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' -t vagrant@192.168.50.3 'echo vagrant | cd Parcelsize/ && chmod u+x ./gradlew && ./gradlew uatTests --rerun-tasks'"
+
+
+    	}
+    	stage('Capacity'){
+        	sh 'echo "Hello World!"'
+    	}
+    	stage('Manual'){
+      // Testumgebung starten
+         dir ('/var/lib/jenkins/workspace/Parcelsize-Pipeline/vagrant/Manualtest'){
+        	sh 'rm -rf .vagrant'
+        	sh 'vagrant destroy -f'
+        	sh 'vagrant up'
+        	}
+
+       // auf Vagrant-Server hochladen
+            sh "sshpass -p vagrant ssh -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' -t vagrant@192.168.50.5 'echo vagrant | wget -nH -r 192.168.50.1:8085/ -P data'"
+
+       // Docker-Images importieren
+       	    sh "sshpass -p vagrant ssh -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' -t vagrant@192.168.50.5 'echo vagrant | sudo docker load -i data/tomcatimage.tar'"
+       	    sh "sshpass -p vagrant ssh -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' -t vagrant@192.168.50.5 'echo vagrant | sudo docker load -i data/parcelsizeimage.tar'"
+		    sh "sshpass -p vagrant ssh -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' -t vagrant@192.168.50.5 'echo vagrant | sudo docker load -i data/databaseimage.tar'"
+
+       // Container starten
+            sh "sshpass -p vagrant ssh -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' -t vagrant@192.168.50.5 'echo vagrant | sudo docker run -d --network="host" tomcatimage'"
+       		sh "sshpass -p vagrant ssh -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' -t vagrant@192.168.50.5 'echo vagrant | sudo docker run -d --network="host" parcelsizeimage'"
+       		sh "sshpass -p vagrant ssh -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' -t vagrant@192.168.50.5 'echo vagrant | sudo docker run -d --network="host" databaseimage'"
+
+            sh "sshpass -p vagrant ssh -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' -t vagrant@192.168.50.5 'echo vagrant | sudo chmod u+x data/geckodriver'"
+		    sh "sshpass -p vagrant ssh -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' -t vagrant@192.168.50.5 'echo vagrant | sudo rm -R -f Parcelsize'"
+       		sh 'sshpass -p vagrant scp -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=no" -P 22 ./ vagrant@192.168.50.5:/home'
+		    sh "sshpass -p vagrant ssh -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' -t vagrant@192.168.50.5 'echo vagrant | cd Parcelsize/ && chmod u+x ./gradlew && ./gradlew uatTests --rerun-tasks'"
+
+            script {
+                def manualTestsSuccessfull = input(message: 'Manual test successful?', ok: 'Yes',
+                        parameters: [booleanParam(defaultValue: true,
+                        description: 'Please release the images',name: 'Yes?')])
+            }
+        //sh 'vagrant halt 7fdbe4e'
+}
+    	stage('Release'){
+       // Produmgebung starten
+        	dir ('/var/lib/jenkins/workspace/Parcelsize-Pipeline/vagrant/prod'){
+        	sh 'rm -rf .vagrant'
+        	sh 'vagrant destroy -f'
+        	sh 'vagrant up'
+        	}
+
+            sh "sshpass -p vagrant ssh -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' -t vagrant@192.168.50.2 'echo vagrant | wget -nH -r 192.168.50.1:8085/ -P data'"
+
+       // Docker-Images importieren
+       		sh "sshpass -p vagrant ssh -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' -t vagrant@192.168.50.2 'echo vagrant | sudo docker load -i data/tomcatimage.tar'"
+       		sh "sshpass -p vagrant ssh -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' -t vagrant@192.168.50.2 'echo vagrant | sudo docker load -i data/parcelsizeimage.tar'"
+		    sh "sshpass -p vagrant ssh -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' -t vagrant@192.168.50.2 'echo vagrant | sudo docker load -i data/databaseimage.tar'"
+
+       // Container starten
+            sh "sshpass -p vagrant ssh -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' -t vagrant@192.168.50.2 'echo vagrant | sudo docker run -d --network="host" tomcatimage'"
+       		sh "sshpass -p vagrant ssh -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' -t vagrant@192.168.50.2 'echo vagrant | sudo docker run -d --network="host" parcelsizeimage'"
+       		sh "sshpass -p vagrant ssh -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' -t vagrant@192.168.50.2 'echo vagrant | sudo docker run -d --network="host" databaseimage'"
+}
+}
