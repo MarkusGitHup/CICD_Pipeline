@@ -10,17 +10,56 @@ import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 
-
+import main.Parcel;
 import main.ParcelsizeServer;
 
 class UnitTest {
 
 	@Test
-	void TestXS_lower() 
-	{
-		String s = "XS";
-		assertEquals(s, "XS");
-	}
+	//mein Test - funktioniert!
+	//void TestXS_lower() 
+	//{
+	//	String s = "XS";
+	//	assertEquals(s, "XS");
+	//}
+	
+	void xsPackage() {
+        Parcel p = new Parcel();
+        p.setHeight(0);
+        p.setLength(0);
+        p.setWidth(0);
+        p.calculateSize();
+        assertEquals("XS", p.getSize());
+}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 /*//Tests von Flo
 	@Test

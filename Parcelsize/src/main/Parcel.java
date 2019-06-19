@@ -1,5 +1,11 @@
 package main;
 
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+
+import javax.ws.rs.core.Response;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
@@ -27,7 +33,29 @@ public class Parcel {
 		this.height = height;
 		this.size = size;
 	}
-
+	
+	public void calculateSize() {
+		int gurtmaß = 1 * this.length + 2 * this.width + 2 * this.height;
+		// open database connection
+		try {
+			System.out.println("Bin jetzt bei database connection");
+			Connection con = DataBase.openConnection();
+			System.out.println("Verbindung aufgebaut");
+			Statement stmt = con.createStatement();
+			System.out.println("Create Statement ausgeführt");
+			ResultSet rs = stmt.executeQuery("SELECT id, size, min_size, max_size " + "FROM packagesize "
+					+ "WHERE min_size < '" + gurtmaß + "'" + "AND max_size >= '" + gurtmaß + "'");
+			System.out.println("rs "+rs);
+			while (rs.next()) {
+				System.out.println(rs.getString("size"));
+				this.size = rs.getString("size");
+			}
+		
+		} catch (Exception e) {
+			System.out.println("DB-Fehler!" +e.getMessage());
+		}
+}
+	
 	public int getLength() {
 		return length;
 	}

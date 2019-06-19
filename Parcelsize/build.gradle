@@ -173,8 +173,8 @@ test {
 }
 
 task uatTests(type: Test){
-//useTestNG()
-useJUnitPlatform()
+useTestNG()
+//useJUnitPlatform()
 exclude '**/unit/**'
 }
 // end::test[]
