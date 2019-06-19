@@ -43,7 +43,8 @@ public class KatalonTestCase {
 		driver.findElement(By.id("cfg-package-depth")).clear();
 		driver.findElement(By.id("cfg-package-depth")).sendKeys("15");
 		driver.findElement(By.id("button")).click();
-		assertEquals("Groesse: M", driver.findElement(By.xpath("(.//*[normalize-space(text()) and normalize-space(.)='Groesse berechnen'])[1]/following::h4[1]")).getText());
+		//assertEquals("Groesse: M", driver.findElement(By.xpath("(.//*[normalize-space(text()) and normalize-space(.)='Groesse berechnen'])[1]/following::h4[1]")).getText());
+		assertEquals("M", driver.findElement(By.xpath("//*[@id=\"size\"]")).getText());
 	}
 
 	@AfterEach

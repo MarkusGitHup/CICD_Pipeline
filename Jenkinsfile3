@@ -54,8 +54,11 @@ node {
     	stage('UAT'){
 		sh "sshpass -p vagrant ssh -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' -t vagrant@192.168.50.3 'echo vagrant | sudo chmod u+x data/geckodriver'"
 		sh "sshpass -p vagrant ssh -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' -t vagrant@192.168.50.3 'echo vagrant | sudo rm -R -f Parcelsize'"
-       	sh 'sshpass -p vagrant scp -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=no" -P 22 ./ vagrant@192.168.50.3:/home'
-		sh "sshpass -p vagrant ssh -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' -t vagrant@192.168.50.3 'echo vagrant | cd Parcelsize/ && chmod u+x ./gradlew && ./gradlew uatTests --rerun-tasks'"
+		sh "sshpass -p vagrant ssh -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' -t vagrant@192.168.50.3 'echo vagrant | sudo apt-get install --assume-yes git-core'"
+       	sh "sshpass -p vagrant ssh -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' -t vagrant@192.168.50.3 'echo vagrant | git clone https://github.com/MarkusGitHup/CICD_Pipeline.git'"
+		sh "sshpass -p vagrant ssh -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' -t vagrant@192.168.50.3 'echo vagrant | cd CICD_Pipeline/Parcelsize/ && chmod u+x CICD_Pipeline/Parcelsize/gradlew && CICD_Pipeline/Parcelsize//gradlew uatTests --rerun-tasks'"
+
+
 
 
     	}

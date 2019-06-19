@@ -4,19 +4,17 @@ apply plugin: 'scala'
 
 mainClassName = 'main.ParcelsizeServer'
 
-
 buildscript {
     repositories {
         mavenCentral()
     }
     dependencies {
-        classpath 'org.junit.platform:junit-platform-gradle-plugin:1.0.0'
+        classpath ('org.junit.platform:junit-platform-gradle-plugin:1.0.0')
     }
 }
 
 apply plugin: 'java-library'
 apply plugin: 'org.junit.platform.gradle.plugin'
-
 
 configurations {
     gatling
@@ -69,6 +67,22 @@ jar {
 }
 // end::jar[]
 
+/*buildscript {
+  repositories {
+    maven {
+      url "https://plugins.gradle.org/m2/"
+    }
+  }
+  dependencies {
+    classpath 'org.junit.platform:junit-platform-gradle-plugin:1.0.0'
+    classpath 'gradle.plugin.com.github.lkishalmi.gatling:gradle-gatling-plugin:3.0.2'
+  }
+}*/
+
+
+//apply plugin: 'com.github.lkishalmi.gatling'
+
+
 
 // tag::dependencies[]
 dependencies {
@@ -116,7 +130,7 @@ dependencies {
 	compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.12'
 
 
-    gatling 'org.scala-lang:scala-library:2.12.3'
+    //gatling 'org.scala-lang:scala-library:2.12.3'
     gatling 'io.gatling.highcharts:gatling-charts-highcharts:2.3.1'
     gatling 'org.scala-lang:scala-compiler:2.12.3'
     gatling "io.gatling:gatling-core:2.3.1"
@@ -132,7 +146,7 @@ dependencies {
     compile "io.gatling:gatling-compiler:2.3.1"
     compile "io.gatling:gatling-commons:2.3.1"
     compile "io.gatling:gatling-test-framework:2.3.1"
-    compile group: 'io.gatling', name: 'jsr166e', version: '1.0'
+    compile group: 'io.gatling', name: 'jsr166e', version: '1.0' 
     // compile group: 'com.typesafe.zinc', name: 'zinc', version: '0.3.15'
     // zinc 'com.typesafe.zinc:zinc:0.3.9'
 
@@ -147,7 +161,8 @@ test {
     useTestNG()
     // enable JUnit Platform (a.k.a. JUnit 5) support
     //useJUnitPlatform()
-
+	
+	include '**/unit/**'
     // Always run tests, even when nothing changed.
     dependsOn 'cleanTest'
 
@@ -155,6 +170,12 @@ test {
     testLogging {
         events "passed", "skipped", "failed"
     }
+}
+
+task uatTests(type: Test){
+//useTestNG()
+useJUnitPlatform()
+exclude '**/unit/**'
 }
 // end::test[]
 
