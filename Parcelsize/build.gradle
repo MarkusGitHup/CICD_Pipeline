@@ -38,14 +38,16 @@ sourceSets
 
     }
     simulations {
-    	java {
-          srcDirs = ['test/scala']
-        }
+    	//java {
+          //srcDirs = ['test/scala']
+        //}
         scala {
-            srcDirs = ['test/scala']
+            //srcDirs = ['test/scala']
+            srcDirs = ['src/gatling/simulations/performancetest']
         }
         resources {
-            srcDirs = ['resources']
+            //srcDirs = ['resources']
+            srcDirs = ['src/gatling/resources']
         }
         compileClasspath += configurations.gatling
     }
