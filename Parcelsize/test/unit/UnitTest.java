@@ -25,15 +25,49 @@ class UnitTest {
 	
 	void xsPackage() {
         Parcel p = new Parcel();
-        p.setHeight(0);
-        p.setLength(0);
-        p.setWidth(0);
+        p.setHeight(5);
+        p.setLength(5);
+        p.setWidth(5);
         p.calculateSize();
         assertEquals("XS", p.getSize());
 }
 	
+	void sPackage() {
+        Parcel p = new Parcel();
+        p.setHeight(5);
+        p.setLength(6);
+        p.setWidth(10);
+        p.calculateSize();
+        assertEquals("S", p.getSize());
+}
 	
+	void mPackage() {
+        Parcel p = new Parcel();
+        p.setHeight(5);
+        p.setLength(11);
+        p.setWidth(15);
+        p.calculateSize();
+        assertEquals("M", p.getSize());
+}
 	
+	void lPackage() {
+        Parcel p = new Parcel();
+        p.setHeight(25);
+        p.setLength(6);
+        p.setWidth(5);
+        p.calculateSize();
+        assertEquals("L", p.getSize());
+}
+	
+	void xlPackage() {
+        Parcel p = new Parcel();
+        p.setHeight(25);
+        p.setLength(50);
+        p.setWidth(10);
+        p.calculateSize();
+        assertEquals("XL", p.getSize());
+}
+		
 	
 	
 	
